@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mon programme PPL</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700&family=Barlow:wght@400;500&display=swap">
+<style>
+:root{--bg:#F3F2EE;--ink:#1D1D1B;--mute:#6B6A64;--card:#FFFFFF;--line:#D8D6CF;--acc:#1D1D1B;
+--gym:#111110;--gymt:#F3F2EE;--push:var(--gym);--pull:var(--gym);--legs:var(--gym);--foot:#7BD389;--rest:#CFCDC4;--on:#1D1D1B;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171716;--ink:#F1F0EA;--mute:#A09F97;--card:#222220;--line:#3A3A37;--acc:#F1F0EA;--gym:#000000}}
+:root[data-theme="dark"]{--bg:#171716;--ink:#F1F0EA;--mute:#A09F97;--card:#222220;--line:#3A3A37;--acc:#F1F0EA;--gym:#000000}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:16px;line-height:1.5}
+main{max-width:960px;margin:0 auto;padding:24px 16px 40px}
+h1{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:700;font-size:44px;line-height:1;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+svg{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.w{cursor:pointer;outline:none}
+.w path{stroke:var(--bg);stroke-width:3;transition:opacity .2s,transform .2s}
+.w text{font-family:"Barlow Condensed",sans-serif;fill:var(--on);pointer-events:none}
+.grid.has-sel .w:not(.on) path{opacity:.75}
+.w.on path{transform:scale(1.04);transform-origin:210px 210px}
+.w:focus-visible path{stroke:var(--ink)}
+.panel,.goals{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.tag{display:inline-block;padding:2px 12px;border-radius:99px;color:var(--on);font-weight:500;font-size:14px}
+.panel h2{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:32px;margin:10px 0 4px;line-height:1.1}
+.panel p{color:var(--mute);margin:0 0 14px}
+.empty{border:1px dashed var(--line);border-radius:8px;padding:16px;color:var(--mute)}
+.ex{border-top:1px solid var(--line)}
+.exh{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 0;cursor:pointer}
+.exh:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.exh .n{font-weight:500}
+.exh .s{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:20px;white-space:nowrap}
+.exh .c{color:var(--mute);font-size:14px;min-width:54px;text-align:right}
+.exb{padding:2px 0 16px}
+.lbl{font-size:14px;color:var(--mute);margin-bottom:8px}
+.stp{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.stp button{all:unset;box-sizing:border-box;width:40px;height:40px;border:1px solid var(--line);border-radius:8px;text-align:center;line-height:38px;font-size:20px;cursor:pointer}
+.stp button:focus-visible,.stp .sv:focus-visible{outline:2px solid var(--ink)}
+.stp input{width:84px;height:40px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:700 20px "Barlow Condensed",sans-serif;text-align:center}
+.eq{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 12px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
+.op{font:700 24px "Barlow Condensed",sans-serif;height:40px;line-height:40px;color:var(--mute)}
+.tot b{font:700 28px "Barlow Condensed",sans-serif;height:40px;line-height:40px;color:var(--ink);white-space:nowrap}
+.save{all:unset;box-sizing:border-box;margin-top:14px;padding:0 18px;height:40px;line-height:40px;border-radius:8px;background:var(--acc);color:var(--bg);font-weight:500;cursor:pointer}
+.save:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.stp input::-webkit-outer-spin-button,.stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stp input{-moz-appearance:textfield;appearance:textfield}
+.cal{margin-top:24px}
+#cal{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.mo h3{font:500 16px Barlow,sans-serif;margin:0 0 8px}.mo h3::first-letter{text-transform:uppercase}
+.mg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.wd{font-style:normal;font-size:12px;color:var(--mute)}
+.cd{display:flex;flex-direction:column;align-items:center;gap:2px;padding:2px 0;border-radius:6px;font-size:13px;line-height:1.2;min-height:36px}
+.cd.td{outline:2px solid var(--ink);outline-offset:-2px}
+.dot{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--mute);display:block;text-decoration:none}
+.dot.g{background:#2FB45A;border-color:#2FB45A}
+.wk{display:grid;grid-template-columns:24px 46px 1fr 10px;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;margin-bottom:6px;font-size:13px}
+.wk.td{border-color:var(--ink);border-width:2px;padding:6px 9px}
+.wk b{font-weight:500}.rg{color:var(--mute)}
+.chs{display:flex;gap:4px;flex-wrap:wrap}
+.ch{font-style:normal;font-size:12px;padding:1px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.ch.on{background:var(--gym);color:var(--gymt);border-color:var(--gym)}
+.dot0{width:8px;height:8px;display:block}
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--mute);margin-bottom:14px}
+.lg span{display:flex;align-items:center;gap:6px}
+.valid{all:unset;box-sizing:border-box;margin-top:16px;padding:0 18px;height:44px;line-height:44px;border-radius:8px;border:1.5px solid var(--ink);font-weight:500;cursor:pointer;display:block;text-align:center}
+.valid.on{background:#2FB45A;border-color:#2FB45A;color:#04210F}
+.valid:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.valid.off{opacity:.45;cursor:not-allowed}
+.vn{margin:16px 0 0;font-size:14px}
+.hint{font-size:14px;color:var(--mute);margin-top:8px}
+.up{color:#2E7D4F;font-weight:500}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .up{color:#7FD0A0}}
+.goals{margin-top:24px}
+.gh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.gh h2{font-family:"Barlow Condensed",sans-serif;font-size:26px;margin:0}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .25s}
+.gl{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px}
+.gl label{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.gl input{width:20px;height:20px;accent-color:var(--acc);margin:0}
+.gl label:has(input:checked){background:var(--bg)}
+.gl label:has(input:checked) span{text-decoration:line-through;color:var(--mute)}
+</style></head>
+<body><main>
+<h1>Programme PPL</h1>
+<p class="sub">Clique sur un jour, puis sur un exercice pour régler ta charge.</p>
+<div class="grid" id="grid">
+<svg viewBox="0 0 420 420" role="group" aria-label="Semaine d'entraînement"><g id="wheel"></g>
+<text x="210" y="204" text-anchor="middle" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;fill:var(--ink)">PPL</text>
+<text x="210" y="228" text-anchor="middle" style="font-size:14px;fill:var(--mute)">1 semaine</text></svg>
+<section class="panel" id="panel" aria-live="polite"></section>
+</div>
+<section class="goals">
+<div class="gh"><h2>Objectifs du jour</h2><span id="gc" style="color:var(--mute)"></span></div>
+<p class="vn" id="gd" style="margin:-4px 0 12px;color:var(--mute)"></p>
+<div class="bar"><i id="gb"></i></div>
+<div class="gl" id="gl"></div>
+</section>
+<section class="goals cal">
+<div class="gh"><h2>Calendrier</h2></div>
+<div class="lg"><span><i class="dot g"></i>Semaine validée (push, pull et legs)</span><span><i class="dot"></i>Semaine en cours ou incomplète</span></div>
+<div id="cal"></div>
+</section>
+</main>
+<script>
+var DAYS=[{d:"Lun",full:"Lundi",t:"push"},{d:"Mar",full:"Mardi",t:"foot"},{d:"Mer",full:"Mercredi",t:"pull"},{d:"Jeu",full:"Jeudi",t:"rest"},{d:"Ven",full:"Vendredi",t:"foot"},{d:"Sam",full:"Samedi",t:"rest"},{d:"Dim",full:"Dimanche",t:"legs"}];
+var TYPES={
+push:{name:"Push",note:"Pecs, épaules, triceps",ex:[["Développé convergent","3 × 10"],["Presse pec","3 × 10"],["Développé militaire","3 × 8"],["Élévations frontales","2 × 12"],["Extensions triceps poulie","3 × 10"],["Dips ou extensions nuque","3 × 15"]]},
+pull:{name:"Pull",note:"Dos, biceps, arrière d'épaules",ex:[["Tractions","4 × échec"],["Rowing machine","3 × 10"],["Tirage horizontal poulie","3 × 10"],["Oiseau (arrière d'épaules)","2 × 12"],["Curl barre poulie (dégressif)","3 × 12"],["Curl marteau","3 × 10"]]},
+legs:{name:"Legs",note:"Jambes, mollets, abdos",ex:[["Squat","3 × 10"],["Leg extension (quadriceps)","3 × 10"],["Leg curl (ischios)","3 × 10"],["Mollets debout","2 × 15"],["Gainage / crunch","3 × 10 ou 30-45 s"]]},
+foot:{name:"Foot",note:"Entraînement de foot",ex:null},
+rest:{name:"Rest",note:"Récupération",ex:null}};
+var GOALS=["3 L d'eau","150 g de protéines","5 g de créatine","8 h de sommeil"];
+var KEY="ppl-v1",S={w:{},c:{},v:{}},mem=null;
+try{var raw=localStorage.getItem(KEY);if(raw)S=JSON.parse(raw)}catch(e){}
+S.w=S.w||{};S.c=S.c||{};S.v=S.v||{};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function fd(){return new Date().toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}
+function fmt(n){return String(n).replace(".",",")}
+function tc(t){return t==="foot"||t==="rest"?"var(--on)":"var(--gymt)"}
+var NS="http://www.w3.org/2000/svg",cx=210,cy=210,R=190,r=78,w=360/7,wheel=document.getElementById("wheel"),els=[];
+function pt(a,k){var t=a*Math.PI/180;return[cx+k*Math.cos(t),cy+k*Math.sin(t)]}
+DAYS.forEach(function(o,i){
+var c=-90+i*w,s=c-w/2,e=c+w/2,p1=pt(s,R),p2=pt(e,R),p3=pt(e,r),p4=pt(s,r),m=pt(c,134);
+var g=document.createElementNS(NS,"g");g.setAttribute("class","w");g.setAttribute("tabindex","0");g.setAttribute("role","button");
+g.setAttribute("aria-label",o.full+" : "+TYPES[o.t].name);
+var p=document.createElementNS(NS,"path");
+p.setAttribute("d","M"+p1+"A"+R+" "+R+" 0 0 1 "+p2+"L"+p3+"A"+r+" "+r+" 0 0 0 "+p4+"Z");
+p.setAttribute("fill","var(--"+o.t+")");g.appendChild(p);
+[[o.d,18,-12],[TYPES[o.t].name,26,12]].forEach(function(x){
+var t=document.createElementNS(NS,"text");t.setAttribute("x",m[0]);t.setAttribute("y",m[1]+x[2]);
+t.setAttribute("text-anchor","middle");t.setAttribute("dominant-baseline","central");
+t.setAttribute("style","font-size:"+x[1]+"px;font-weight:"+(x[1]>20?700:500)+";fill:"+tc(o.t));t.textContent=x[0];g.appendChild(t)});
+g.onclick=function(){sel(i)};g.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();sel(i)}};
+wheel.appendChild(g);els.push(g)});
+function last(id){var h=S.w[id]||[];return h.length?h[h.length-1]:null}
+function hint(id){var h=S.w[id]||[],l=h[h.length-1];
+if(!l)return"Aucune séance enregistrée. Note ton poids initial, puis ajoute ta surcharge.";
+var b=l.base!=null?l.base:l.kg,u=l.sur||0,t="Dernière séance ("+l.d+") : "+fmt(b)+" + "+fmt(u)+" = "+fmt(l.kg)+" kg";
+if(h.length>1){var df=Math.round((l.kg-h[h.length-2].kg)*100)/100;
+if(df>0)t+=' <span class="up">+'+fmt(df)+" kg</span>";else if(df<0)t+=" "+fmt(df)+" kg"}
+return t+".<br>Toutes les séries réussies ? Ajoute 2,5 kg de surcharge."}
+function allG(){var a=S.c[selKey()]||[];return a.filter(Boolean).length===GOALS.length}
+var MSG="Coche les 4 objectifs du jour pour valider la séance.";
+function vb(i){
+if(isFut())return'<p class="vn">Tu pourras valider cette séance le '+DAYS[i].full.toLowerCase()+'.</p>';
+var on=S.v[selKey()],off=!on&&!allG();
+return'<button class="valid'+(on?" on":"")+(off?" off":"")+'" aria-disabled="'+off+'">'+(on?"Séance validée ✓":"Valider la séance")+'</button><p class="vn" id="vm">'+(off?MSG:"")+'</p>'}
+function rv(){var b=document.querySelector(".valid");if(!b)return;var on=!!S.v[selKey()],off=!on&&!allG();
+b.classList.toggle("on",on);b.classList.toggle("off",off);b.setAttribute("aria-disabled",off);
+b.textContent=on?"Séance validée ✓":"Valider la séance";document.getElementById("vm").textContent=off?MSG:""}
+function sel(i){
+curI=i;
+els.forEach(function(g,k){g.classList.toggle("on",k===i)});
+document.getElementById("grid").classList.add("has-sel");
+var o=DAYS[i],T=TYPES[o.t],h='<span class="tag" style="background:var(--'+o.t+');color:'+tc(o.t)+'">'+o.full+'</span><h2>'+T.name+'</h2><p>'+T.note+'</p>';
+if(T.ex===null){h+='<div class="empty">'+(o.t==="rest"?"Jour de repos : pas de séance.":"Pas de salle aujourd'hui.")+'</div>'+(o.t==="foot"?'<div class="empty" style="margin-top:10px;color:var(--ink)">⚽ Si t\'es nul, ta mère la keh</div>':'')}
+else{T.ex.forEach(function(x,k){var id=o.t+k,l=last(id),bv=l?(l.base!=null?l.base:l.kg):0,sv=l?(l.sur||0):0;
+h+='<div class="ex" data-id="'+id+'"><button class="exh" aria-expanded="false"><span class="n">'+x[0]+'</span><span class="s">'+x[1]+'</span><span class="c">'+(l?fmt(l.kg)+" kg":"+ charge")+'</span></button>'+
+'<div class="exb" hidden><div class="eq"><div class="fld">Poids initial<div class="stp"><input class="b" type="number" inputmode="decimal" step="2.5" min="0" value="'+bv+'" aria-label="Poids initial en kg"></div></div><span class="op">+</span><div class="fld">Surcharge<div class="stp"><button data-a="-" aria-label="Moins 2,5 kg">−</button><input class="su" type="number" inputmode="decimal" step="2.5" min="0" value="'+sv+'" aria-label="Surcharge en kg"><button data-a="+" aria-label="Plus 2,5 kg">+</button></div></div><span class="op">=</span><div class="fld tot">Total<b class="t">'+fmt(bv+sv)+' kg</b></div></div><button class="save">Enregistrer</button>'+
+'<div class="hint">'+hint(id)+'</div></div></div>'});h+=vb(i)}
+document.getElementById("panel").innerHTML=h;goals()}
+function upd(ex){var b=parseFloat(ex.querySelector(".b").value)||0,u=parseFloat(ex.querySelector(".su").value)||0;ex.querySelector(".t").textContent=fmt(Math.round((b+u)*100)/100)+" kg"}
+var P=document.getElementById("panel");
+P.addEventListener("input",function(ev){var ex=ev.target.closest(".ex");if(ex)upd(ex)});
+P.addEventListener("click",function(ev){
+var b=ev.target.closest("button");if(!b)return;
+if(b.classList.contains("valid")){var tk=selKey();if(isFut())return;if(!S.v[tk]&&!allG()){rv();return}S.v[tk]=!S.v[tk];save();rv();cal();return}
+var ex=b.closest(".ex");if(!ex)return;
+var body=ex.querySelector(".exb");
+if(b.classList.contains("exh")){var o=body.hidden;body.hidden=!o;b.setAttribute("aria-expanded",o)}
+else if(b.dataset.a){var si=ex.querySelector(".su");si.value=Math.max(0,(parseFloat(si.value)||0)+(b.dataset.a==="+"?2.5:-2.5));upd(ex)}
+else if(b.classList.contains("save")){var bi=ex.querySelector(".b"),bv=parseFloat(bi.value),sv=parseFloat(ex.querySelector(".su").value)||0;
+if(isNaN(bv)||bv<0){bi.focus();return}
+var kg=Math.round((bv+sv)*100)/100,id=ex.dataset.id,h=S.w[id]=S.w[id]||[],t=today(),l=h[h.length-1],en={t:t,d:fd(),base:bv,sur:sv,kg:kg};
+if(l&&l.t===t)h[h.length-1]=en;else h.push(en);
+save();ex.querySelector(".c").textContent=fmt(kg)+" kg";ex.querySelector(".hint").innerHTML=hint(id)}});
+function ymd(d){return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+var curI=0;
+function selDate(i){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate()-((n.getDay()+6)%7)+i)}
+function selKey(){return ymd(selDate(curI))}
+function isFut(){var n=new Date();return selDate(curI).getTime()>new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime()}
+function lockG(){return false}
+function goals(){var a=S.c[selKey()]||[],fut=lockG(),n=0,h="";
+GOALS.forEach(function(g,k){if(a[k])n++;h+='<label><input type="checkbox" data-k="'+k+'"'+(a[k]?" checked":"")+(fut?" disabled":"")+'><span>'+g+'</span></label>'});
+document.getElementById("gl").innerHTML=h;prog(n);
+var dt=selDate(curI),td=ymd(dt)===today();
+document.getElementById("gd").textContent=DAYS[curI].full+" "+dt.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})+(td?" (aujourd'hui)":fut?" : pas encore disponible":"")}
+function prog(n){document.getElementById("gc").textContent=n+" / "+GOALS.length;document.getElementById("gb").style.width=(n/GOALS.length*100)+"%"}
+document.getElementById("gl").addEventListener("change",function(ev){
+var k=ev.target.dataset.k;if(k===undefined)return;
+if(lockG())return;var t=selKey(),a=S.c[t]=S.c[t]||[false,false,false,false];a[k]=ev.target.checked;
+if(a.filter(Boolean).length<GOALS.length)S.v[t]=false;save();prog(a.filter(Boolean).length);cal();rv()});
+var MONTHS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+var GT=["push","pull","legs"],GN={push:"Push",pull:"Pull",legs:"Legs"};
+function wk(y,m,a,b){var g={};for(var d=a;d<=b;d++){if(S.v[y+"-"+(m+1)+"-"+d])g[DAYS[(new Date(y,m,d).getDay()+6)%7].t]=1}return g}
+function cal(){var now=new Date(),tk=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime(),h="";
+for(var n=0;n<11;n++){var y=2026+Math.floor((9+n)/12),m=(9+n)%12,len=new Date(y,m+1,0).getDate();
+h+='<div class="mo"><h3>'+MONTHS[m]+" "+y+"</h3>";
+[[1,7],[8,14],[15,21],[22,len]].forEach(function(r,i){
+var g=wk(y,m,r[0],r[1]),done=GT.every(function(t){return g[t]}),st=new Date(y,m,r[0]).getTime()<=tk,cur=st&&tk<=new Date(y,m,r[1]).getTime();
+h+='<div class="wk'+(cur?" td":"")+'"><b>S'+(i+1)+'</b><span class="rg">'+r[0]+"–"+r[1]+'</span><span class="chs">'+GT.map(function(t){return'<i class="ch'+(g[t]?" on":"")+'">'+GN[t]+"</i>"}).join("")+"</span>"+(st?'<u class="dot'+(done?" g":"")+'"></u>':'<u class="dot0"></u>')+"</div>"});
+h+="</div>"}
+document.getElementById("cal").innerHTML=h}
+var D0=today();
+function tick(){if(today()!==D0){D0=today();goals();cal();sel((new Date().getDay()+6)%7)}}
+setInterval(tick,10000);["visibilitychange","focus","pageshow"].forEach(function(e){(e==="visibilitychange"?document:window).addEventListener(e,tick)});
+cal();goals();sel((new Date().getDay()+6)%7);
+</script></body></html>
